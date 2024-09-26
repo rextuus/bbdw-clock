@@ -1,0 +1,27 @@
+<div{{ attributes }}>
+    <div>
+{#        <img src="/path/to/your/images/folder/{{ this.imageName }}">#}
+    </div>
+
+    <input type="number" data-model="max">
+
+    Generating a number between 0 and {{ max }}
+    <strong>{{ this.randomNumber }}</strong>
+
+
+    <script>
+        function refreshImage() {
+            fetch('/display/update')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+
+        // Set an interval to refresh the image every 5 seconds.
+        setInterval(refreshImage, 5000);
+    </script>
+</div>

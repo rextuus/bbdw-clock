@@ -1,0 +1,16 @@
+<div{{ attributes }} class="card shadow-sm p-3 mb-4 bg-body rounded" style="width: 40rem;">
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Erschienen auf:</h6>
+        <ul class="list-group list-group-flush">
+            {% for track in this.song.tracks %}
+                <li class="list-group-item">
+                    <div class="p-3 mb-1 bg-light text-dark">
+                        <span class="text-primary">#{{ track.number }}</span> auf
+                        <span class="badge bg-info text-dark">{{ track.album.type.name }}</span>
+                        <span class="badge bg-primary text-dark">{{ track.album.name }} ({{ track.album.year }})</span>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

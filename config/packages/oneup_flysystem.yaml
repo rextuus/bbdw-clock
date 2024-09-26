@@ -1,0 +1,11 @@
+# Read the documentation: https://github.com/1up-lab/OneupFlysystemBundle
+oneup_flysystem:
+    adapters:
+        album:
+            local:
+                location: '%kernel.project_dir%/%env(resolve:ALBUM_IMAGE_DIR)%'
+    filesystems:
+        album:
+            adapter: album
+            visibility: private
+            alias: flysystem_album

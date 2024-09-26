@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+{% block title %}Display{% endblock %}
+{% block body %}
+    <style>
+        body {
+            background: #000;
+            margin: 0;
+            padding: 25vh 0 0 0; /* Add some space at the top of the body */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel {
+            height: 50vh;
+            width: 80%;
+            margin-bottom: 2vh;
+            position: relative;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .carousel img {
+            height: 100%;
+            width: auto;
+            display: block;
+            margin: 0 auto;
+            border: #767676 4px solid;
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Smooth fading effect */
+        }
+        .carousel img.active {
+            opacity: 1; /* Visible image */
+        }
+        .carousel .icon {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            width: 15%;
+            height: 20%;
+            background: #fff;
+            border-radius: 50%;
+        }
+    </style>
+
+    <div id="carousel" class="carousel">
+        <img id="mainImage" class="active" src="{{ asset('build/images/' ~ correctAlbum.file.relativePath) }}" alt="Album Image">
+        <img id="iconImage" class="icon active" src="{{ asset('build/icons/bat.png') }}" alt="Icon Image">
+    </div>
+
+    <script>
+        let currentIndex = 0;
+        const albums = [
+            { image: '{{ asset('build/images/' ~ correctAlbum.file.relativePath) }}', icon: '{{ asset('build/icons/bat.png') }}' },
+            { image: '{{ asset('build/images/' ~ trapAlbums[0].file.relativePath) }}', icon: '{{ asset('build/icons/heart.png') }}' },
+            { image: '{{ asset('build/images/' ~ trapAlbums[1].file.relativePath) }}', icon: '{{ asset('build/icons/tea.png') }}' }
+        ];
+
+        function switchImage() {
+            const mainImage = document.getElementById('mainImage');
+            const iconImage = document.getElementById('iconImage');
+
+            // Fade out the current images
+            mainImage.classList.remove('active');
+            iconImage.classList.remove('active');
+
+            // After fade out, change the image sources and fade them back in
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % albums.length;
+                mainImage.src = albums[currentIndex].image;
+                iconImage.src = albums[currentIndex].icon;
+
+                // Fade in the new images
+                mainImage.classList.add('active');
+                iconImage.classList.add('active');
+            }, 1000); // Wait for the fade-out transition to complete
+        }
+
+        // Switch image every 10 seconds for the carousel
+        setInterval(switchImage, 10000);
+
+        function refreshImage() {
+            fetch('/display/update')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // Reload the page if the API provides success
+                    }
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+
+        // Set an interval to refresh the image every 5 seconds for external updates
+        setInterval(refreshImage, 5000);
+    </script>
+{% endblock %}

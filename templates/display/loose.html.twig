@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+{% block title %}Display{% endblock %}
+{% block body %}
+    <style>
+        body {
+            background: #000;
+            margin: 0;
+            padding: 10vh 0 0 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel {
+            /*height: 100vh;*/
+            width: 85%;
+            margin-bottom: 2vh;
+            position: relative;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .carousel img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border: #767676 4px solid;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+            box-shadow: 20px 20px 20px #767676;
+        }
+        #text{
+            font-weight: bold;
+            font-size: 4.5em;
+            margin-bottom: 20px;
+        }
+    </style>
+    <div id="text">DTH statt BBDW</div>
+    <div id="carousel" class="carousel">
+        <img id="mainImage" class="active" src="{{ asset('build/images/loose/breiti.jpg') }}" alt="Album Image">
+    </div>
+    <script>
+        function refreshImage() {
+            fetch('/display/update')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+
+        // Set an interval to refresh the image every 5 seconds.
+        setInterval(refreshImage, 5000);
+    </script>
+{% endblock %}

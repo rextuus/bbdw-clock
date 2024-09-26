@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block title %}Display{% endblock %}
+{% block body %}
+    <style>
+        body {
+            background: #000;
+            margin: 0;
+            padding: 2vh 0 0 0; /* Add some space at the top of the body */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .choice-option {
+            position: relative;
+            height: 30vh;
+            width: 80%;
+            margin-bottom: 2vh;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .choice-option img:first-child {
+            height: 100%;
+            width: auto;
+            display: block;
+            margin: 0 auto;
+            border: #767676 4px solid;
+        }
+        .choice-option img:nth-child(2) {
+            position: absolute;
+            bottom: 10px;
+            right: 100px;
+            width: 15%;
+            height: 20%;
+            background: #fff;
+            border-radius: 50%;
+        }
+    </style>
+    <div class="choice-option">
+        <img src="{{ asset('build/images/' ~ correctAlbum.file.relativePath) }}" alt="Image Description">
+        <img src="{{ asset('build/icons/bat.png') }}" alt="Icon Description">
+    </div>
+    <div class="choice-option">
+        <img src="{{ asset('build/images/' ~ trapAlbums[0].file.relativePath) }}" alt="Image Description">
+        <img src="{{ asset('build/icons/heart.png') }}" alt="Icon Description">
+    </div>
+    <div class="choice-option">
+        <img src="{{ asset('build/images/' ~ trapAlbums[1].file.relativePath) }}" alt="Image Description">
+        <img src="{{ asset('build/icons/tea.png') }}" alt="Icon Description">
+    </div>
+    <script>
+        function refreshImage() {
+            fetch('/display/update')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+
+        // Set an interval to refresh the image every 5 seconds.
+        setInterval(refreshImage, 5000);
+    </script>
+{% endblock %}
