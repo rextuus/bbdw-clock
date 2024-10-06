@@ -4,8 +4,15 @@ oneup_flysystem:
         album:
             local:
                 location: '%kernel.project_dir%/%env(resolve:ALBUM_IMAGE_DIR)%'
+        song:
+            local:
+                location: '%kernel.project_dir%/%env(resolve:SONG_IMAGE_DIR)%'
     filesystems:
         album:
             adapter: album
             visibility: private
             alias: flysystem_album
+        song:
+            adapter: song
+            visibility: private
+            alias: flysystem_song

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Clock\LyricGameProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -27,10 +28,7 @@ class GameApiController extends AbstractController
             return new Response('Not allowed value for parameter buttonName', 422);
         }
 
-        $this->lyricGameProcessor->evaluateButtonChoice($buttonName);
-
-        return $this->render('game_api/index.html.twig', [
-            'controller_name' => 'GameApiController',
-        ]);
+        $audio = $this->lyricGameProcessor->evaluateButtonChoice($buttonName);
+        return new JsonResponse(['audio_path' => $audio->getFile()->getRelativePath()]);
     }
 }

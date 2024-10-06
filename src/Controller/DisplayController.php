@@ -15,8 +15,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/display')]
 class DisplayController extends AbstractController
 {
-
-
     public function __construct(
         private readonly GameSessionService $gameSessionService,
         private readonly AlbumService $albumService,
@@ -30,7 +28,7 @@ class DisplayController extends AbstractController
     {
         $choices = $this->gameSessionService->getCurrenAlbumChoices();
 
-        $correctAlbum = $this->albumService->findById($choices[LyricGameProcessor::CORRECT_ALBUM]);
+        $correctAlbum = $this->albumService->findById($choices[LyricGameProcessor::CORRECT_ALBUM][0]['id']);
 
         $displayMode = $this->settingService->getCurrentAlbumDisplayMode();
 
@@ -38,12 +36,20 @@ class DisplayController extends AbstractController
             AlbumDisplayMode::SPLIT => $template = 'display/album_choice_split.html.twig',
             AlbumDisplayMode::CAROUSEL => $template = 'display/album_choice_carousel.html.twig',
             AlbumDisplayMode::LOOSE => $template = 'display/loose.html.twig',
+            AlbumDisplayMode::WIN => $template = 'display/win.html.twig',
         };
 
         $trapAlbums = [];
-        foreach ($choices[LyricGameProcessor::TRAP_ALBUMS] as $albumId) {
-            $trapAlbums[] = $this->albumService->findById($albumId);
+        foreach ($choices[LyricGameProcessor::TRAP_ALBUMS] as $album) {
+            $trapAlbums[] = $this->albumService->findById($album['id']);
         }
+
+        // get random number between 1 and 5
+        $randomNumber = random_int(1, 5);
+        $looseImage = 'build/images/loose/dth_' . $randomNumber . '.jpg';
+
+        $randomNumber = random_int(1, 3);
+        $winImage = 'build/images/win/win_' . $randomNumber . '.gif';
 
         // we have updated
         $this->gameSessionService->setForceDisplayUpdate(false);
@@ -51,6 +57,8 @@ class DisplayController extends AbstractController
         return $this->render($template, [
             'correctAlbum' => $correctAlbum,
             'trapAlbums' => $trapAlbums,
+            'looseImage' => $looseImage,
+            'winImage' => $winImage,
         ]);
     }
 

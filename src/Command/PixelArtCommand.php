@@ -24,6 +24,7 @@ class PixelArtCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // TODO Deprecated was a test probably
         $album = $this->albumService->findById(1);
 
 

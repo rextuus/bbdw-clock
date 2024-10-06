@@ -8,6 +8,7 @@ use App\Discography\Content\Album\Data\AlbumData;
 use App\Discography\Import\Parser\Parser;
 use App\Entity\Album;
 use App\File\FileService;
+use App\File\FileType;
 use App\File\Flysystem\FilesystemProvider;
 use App\File\ImageType;
 use function Symfony\Component\String\s;
@@ -35,6 +36,7 @@ class AlbumCoverImportService
         $file = $this->fileService->importBinaryFileIntoFilesystem(
             $fileName,
             'jpg',
+            FileType::IMAGE,
             FilesystemProvider::IDENT_ALBUM,
             $stream,
             ImageType::ALBUM_IMAGE

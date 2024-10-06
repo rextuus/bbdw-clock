@@ -42,17 +42,17 @@
             border-radius: 50%;
         }
     </style>
-    <div id="text" class="text-center display-5 active mb-4">Fürchte da ist jemand DTH-Fan</div>
+    <div id="text" class="text-center display-5 active mb-4">Das ist korrekt</div>
 
     <div id="carousel" class="carousel">
-        <img id="mainImage" class="active" src="{{ asset(looseImage) }}" alt="Album Image">
+        <img id="mainImage" class="active" src="{{ asset(winImage) }}" alt="Album Image">
     </div>
 
     <script>
         let currentIndex = 0;
         const albums = [
-            { image: '{{ asset(looseImage)}}', text: 'Fürchte da ist jemand DTH-Fan' },
-            { image: '{{ asset('build/images/' ~ correctAlbum.file.relativePath) }}', text: 'Korrekt wäre gewesen:' },
+            { image: '{{ asset(winImage)}}', text: 'Das ist korrekt' },
+            { image: '{{ asset('build/images/' ~ correctAlbum.file.relativePath) }}', text: 'Es war:' },
         ];
 
         function switchImage() {

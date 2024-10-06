@@ -1,0 +1,86 @@
+sudo apt update
+sudo apt upgrade
+
+# install php 8.1 (if older version of rasperian os)
+sudo apt install ca-certificates apt-transport-https software-properties-common wget -y
+wget -qO - https://packages.sury.org/php/apt.gpg | sudo tee /usr/share/keyrings/sury-php.gpg > /dev/null
+echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bullseye main" | sudo tee /etc/apt/sources.list.d/sury-php.list
+sudo apt update
+sudo apt install php8.1 php8.1-cli php8.1-common php8.1-mbstring php8.1-xml php8.1-mysql php8.1-sqlite3 unzip
+php -v
+
+# install composer
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+sudo chmod +x /usr/local/bin/composer
+composer --version
+
+# npm
+sudo apt install nodejs npm
+node -v
+npm -v
+
+# projekt installieren
+nano .env
+    APP_ENV=dev
+    APP_SECRET=bec47a471f272ab7a59bf6d321fdb83f
+    ###< symfony/framework-bundle ###
+    DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+composer install
+php bin/console d:s:u --force
+npm install
+npm run build
+
+# copy db
+scp /home/wolfgang/Documents/programming/bbdw-clock/var/data.db pi@bbdw-rapsi:/home/pi/bbdw-clock/var/data.db
+
+# auto start with chromium in kiosk mode
+sudo nano /home/pi/.config/lxsession/LXDE-pi/autostart
+    @bash /home/pi/kiosk.sh
+sudo nano /home/pi/kiosk.sh
+    #!/bin/bash
+    # Wait for a few seconds to ensure the system is ready
+    sleep 4
+    xset s off                # Disable screen saver
+    xset -dpms                 # Disable DPMS (Energy Star) features
+    xset s noblank            # Don't blank the video device
+
+    # Start the PHP server in the background
+    php -S localhost:8000 -t /home/pi/bbdw-clock/public &
+
+    # Start Chromium in kiosk mode
+    chromium-browser --noerrdialogs --kiosk http://localhost:8000
+sudo chmod +x /home/pi/kiosk.sh
+
+# screen rotation
+sudo nano /boot/config.txt
+    https://www.waveshare.com/wiki/3.5inch_RPi_LCD_(A)
+    git clonen und im Ordner
+    sudo ./LCD35-show 90
+    hdmi_cvt 620 480 60 6 0 0 0
+
+
+# mouse off
+sudo apt-get update
+sudo apt-get install unclutter
+sudo nano /home/pi/.config/lxsession/LXDE-pi/autostart
+@unclutter -idle 0
+
+# buttons
+sudo apt install python3-gpiozero
+sudo nano /etc/systemd/system/button_control.service
+    [Unit]
+    Description=Button Control Script
+    After=network.target
+
+    [Service]
+    ExecStart=/usr/bin/python3 /home/pi/button_control.py
+    WorkingDirectory=/home/pi
+    StandardOutput=inherit
+    StandardError=inherit
+    Restart=always
+    User=pi
+
+    [Install]
+    WantedBy=multi-user.target
+sudo systemctl enable button_control.service

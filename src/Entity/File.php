@@ -26,7 +26,7 @@ class File
     #[ORM\Column(enumType: FileType::class)]
     private ?FileType $type = null;
 
-    #[ORM\Column(enumType: ImageType::class)]
+    #[ORM\Column(nullable: true, enumType: ImageType::class)]
     private ?ImageType $imageType = null;
 
     #[ORM\Column(length: 255)]
@@ -81,7 +81,7 @@ class File
         return $this->imageType;
     }
 
-    public function setImageType(ImageType $imageType): static
+    public function setImageType(?ImageType $imageType): static
     {
         $this->imageType = $imageType;
 

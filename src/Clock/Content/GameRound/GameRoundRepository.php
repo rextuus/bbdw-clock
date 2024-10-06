@@ -45,7 +45,7 @@ class GameRoundRepository extends AbstractBaseRepository
     {
         $qb = $this->createQueryBuilder('g');
         $qb->where($qb->expr()->isNull('g.finished'));
-        $qb->orderBy('g.created', 'ASC');
+        $qb->orderBy('g.started', 'ASC');
         $qb->setMaxResults(1);
 
         return $qb->getQuery()->getOneOrNullResult();

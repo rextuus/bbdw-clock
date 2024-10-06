@@ -2,27 +2,27 @@
 
 namespace App\Command;
 
-use App\Clock\Content\Setting\AlbumDisplayMode;
-use App\Clock\Content\Setting\SettingService;
+use App\Discography\Import\ImportService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'app:change-settings',
-    description: 'Add a short description for your command',
+    name: 'test:import-all-songs-from-bademeister',
+    description: 'Crawl bademeister.de and stores all found songs inclusive their lyrics in db',
 )]
-class ChangeSettingsCommand extends Command
+class ImportAllSongsFromBademeisterCommand extends Command
 {
-    public function __construct(private readonly SettingService $settingService)
-    {
+    public function __construct(
+        private readonly ImportService $importService
+    ) {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->settingService->setCurrentAlbumDisplayMode(AlbumDisplayMode::LOOSE);
+        $this->importService->importSongList();
 
         return Command::SUCCESS;
     }

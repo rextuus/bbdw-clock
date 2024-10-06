@@ -9,6 +9,7 @@ use App\File\Data\FileData;
 use App\File\Flysystem\FilesystemProvider;
 use Exception;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class FileService
 {
@@ -16,7 +17,8 @@ class FileService
         private readonly FileRepository $repository,
         private readonly FileFactory $factory,
         private readonly FilesystemProvider $filesystemProvider,
-        private readonly FilePathGenerator $filePathGenerator
+        private readonly FilePathGenerator $filePathGenerator,
+        private KernelInterface $kernel
     ) {
     }
 
@@ -76,6 +78,7 @@ class FileService
     public function importBinaryFileIntoFilesystem(
         string $fileName,
         string $extension,
+        FileType $fileType,
         string $filesystemIdent,
         $content,
         ?ImageType $imageType = null
@@ -96,11 +99,25 @@ class FileService
 
         return $this->createFileEntityByGenerationResult(
             $fileGenerationResult,
-            FileType::IMAGE,
+            $fileType,
             $extension,
             true,
             $imageType
         );
+    }
+
+    public function getFullQualifiedPath(File $file)
+    {
+        $filesystem = $this->filesystemProvider->getFilesystem($file->getFilesystemIdent());
+
+        // For local file system, you normally have base directory.
+        $baseDir = $this->kernel->getProjectDir();
+
+        // `$file->getRelativePath()` should return the path relative to the `$baseDir`.
+        $relativePath = $file->getRelativePath();
+
+        // So here is the full path.
+        return $baseDir . '/assets/songs/' . $relativePath;
     }
 
     private function deleteFileFromFilesystem(string $filesystemIdent, string $relativePath): void

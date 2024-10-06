@@ -2,27 +2,26 @@
 
 namespace App\Command;
 
-use App\Discography\Import\ImportService;
+use App\Clock\LyricGameProcessor;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'test:parse_bademeister',
+    name: 'app:test-set-new-random-lyric',
     description: 'Add a short description for your command',
 )]
-class TestParseBademeisterCommand extends Command
+class TestSetNewRandomLyricCommand extends Command
 {
-    public function __construct(
-        private readonly ImportService $importService
-    ) {
+    public function __construct(private readonly LyricGameProcessor $lyricGameProcessor)
+    {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->importService->importSongList();
+        $this->lyricGameProcessor->setNewRandomLyric();
 
         return Command::SUCCESS;
     }

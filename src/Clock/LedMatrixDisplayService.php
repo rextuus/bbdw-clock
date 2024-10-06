@@ -28,9 +28,6 @@ class LedMatrixDisplayService
         $this->client->request('GET', $ip . self::TEXT_API_URL . '?text=' . $text . '&variant=static');
     }
 
-    /**
-     * @throws TransportExceptionInterface
-     */
     public function displayScrollingText(string $text): void
     {
         // prepare text for display => remove Umlaute and -
@@ -38,7 +35,7 @@ class LedMatrixDisplayService
 
         $ip = $this->settingService->getLedMatrixDisplayIp();
 
-        $this->client->request('GET', 'http://' . $ip . self::TEXT_API_URL . '?text=' . $text . '&variant=scrolling');
+        $this->client->request('GET', 'http://' . $ip . self::TEXT_API_URL . '?text=' . $text);
     }
 
     private function prepareTextForDisplaying(string $text): string
