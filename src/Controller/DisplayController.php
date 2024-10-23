@@ -8,6 +8,7 @@ use App\Clock\Content\Setting\SettingService;
 use App\Clock\LyricGameProcessor;
 use App\Discography\Content\Album\AlbumService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,6 +20,7 @@ class DisplayController extends AbstractController
         private readonly GameSessionService $gameSessionService,
         private readonly AlbumService $albumService,
         private readonly SettingService $settingService,
+        #[Autowire('%env(OPENWEATHER_API_KEY)%')] private readonly string $apiKey,
     )
     {
     }
@@ -72,6 +74,7 @@ class DisplayController extends AbstractController
     public function test(): Response
     {
         return $this->render('display/weather.html.twig', [
+            'openweather_api_key' => $this->apiKey
         ]);
     }
 }

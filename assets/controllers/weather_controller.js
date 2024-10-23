@@ -30,7 +30,7 @@ export default class extends Controller {
     }
 
     fetchWeather() {
-        const apiKey = "e234059347c190a8bfbe5cc900ac0355";
+        const apiKey = openWeatherApiKey;
         const city = "Köln";
         const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`;
 
