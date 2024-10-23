@@ -1,0 +1,70 @@
+.weather-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; // Full height of the screen to center vertically
+  padding: 10px;
+  width: 100%;
+  max-width: 100%;  // Ensure the container is always 100% of the screen width
+  margin: auto;
+  text-align: center;
+
+  .current-date {
+    h1 {
+      font-size: 1.5rem;  // Larger font for the date
+      color: #1b9a9a;
+    }
+    h2 {
+      font-size: 3rem;  // Larger font for the time
+      color: #283593;
+    }
+    margin-bottom: 20px;
+
+  }
+
+  .current-weather, .forecast {
+    margin-top: 10px;
+    margin-bottom: 20px;
+
+    h3 {
+      font-size: 1.5rem;
+      color: #37474f;
+    }
+
+    .weather-info, .forecast-day {
+      display: flex;
+      flex-direction: column; // Stack weather icon and temp vertically
+      justify-content: center;
+      align-items: center;
+      margin: 8px 0;
+
+      img {
+        width: 40px;
+        height: 40px;
+        margin-top: 5px; // Add spacing between icon and text
+      }
+
+      .temperature, .forecast-temp {
+        font-size: 1.5rem;  // Larger font for temperature
+        color: #0288d1;
+      }
+    }
+
+    .forecast-days {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+    }
+  }
+}
+
+// Day and night modes
+body.day-mode {
+  background-color: #e0f7fa;
+}
+
+body.night-mode {
+  background-color: #1a1a2e;
+  color: #fff;
+}

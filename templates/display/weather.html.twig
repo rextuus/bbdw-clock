@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Weather Display{% endblock %}
+
+{% block body %}
+    <div class="weather-container" data-controller="weather">
+        <div class="current-date">
+            {% set now = 'now'|date('l, d.m.Y', 'Europe/Berlin') %}
+            {% set weekday = now|date('D', 'Europe/Berlin')|trans({}, 'messages') %}
+
+            <h1>{{ weekday ~ ', ' ~ now|date('d.m.Y') }}</h1>
+            <h2 class="time"></h2> <!-- Time (updated by JS) -->
+        </div>
+
+        <div class="current-weather">
+{#            <h3>Aktuelles Wetter</h3>#}
+            <div class="weather-info">
+                <img class="weather-icon" src="" alt="Weather Icon" />
+                <div>
+                    <p class="temperature"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="forecast">
+            <h3>3-Tage-Vorhersage</h3>
+            <div class="forecast-days">
+                {% for i in 1..3 %}
+                    <div class="forecast-day">
+                        <h4></h4> <!-- Day name will be set by JS -->
+                        <img class="forecast-icon" src="" alt="Weather Icon" />
+                        <p class="forecast-temp"></p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

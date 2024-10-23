@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a2e679abf40f8e45b65ca66a46c8e866",
+    "content-hash": "7df602bec855fb475fb9b1d7a6918009",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -5298,16 +5298,16 @@
         },
         {
             "name": "symfony/stimulus-bundle",
-            "version": "v2.19.0",
+            "version": "v2.21.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/stimulus-bundle.git",
-                "reference": "5e2e1aff3e7cff2875e2f901437543fda9ca9910"
+                "reference": "e5f7747b514865719e0990389ce35a9b71bebb48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/stimulus-bundle/zipball/5e2e1aff3e7cff2875e2f901437543fda9ca9910",
-                "reference": "5e2e1aff3e7cff2875e2f901437543fda9ca9910",
+                "url": "https://api.github.com/repos/symfony/stimulus-bundle/zipball/e5f7747b514865719e0990389ce35a9b71bebb48",
+                "reference": "e5f7747b514865719e0990389ce35a9b71bebb48",
                 "shasum": ""
             },
             "require": {
@@ -5347,7 +5347,7 @@
                 "symfony-ux"
             ],
             "support": {
-                "source": "https://github.com/symfony/stimulus-bundle/tree/v2.19.0"
+                "source": "https://github.com/symfony/stimulus-bundle/tree/v2.21.0"
             },
             "funding": [
                 {
@@ -5363,7 +5363,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-30T19:26:23+00:00"
+            "time": "2024-10-05T22:11:16+00:00"
         },
         {
             "name": "symfony/stopwatch",
@@ -5878,6 +5878,103 @@
             "time": "2024-08-11T12:24:16+00:00"
         },
         {
+            "name": "symfony/ux-turbo",
+            "version": "v2.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/ux-turbo.git",
+                "reference": "5eaa803dea9f954aa124963f2c872b414d97cc97"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/ux-turbo/zipball/5eaa803dea9f954aa124963f2c872b414d97cc97",
+                "reference": "5eaa803dea9f954aa124963f2c872b414d97cc97",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/stimulus-bundle": "^2.9.1"
+            },
+            "conflict": {
+                "symfony/flex": "<1.13"
+            },
+            "require-dev": {
+                "dbrekelmans/bdi": "dev-main",
+                "doctrine/doctrine-bundle": "^2.4.3",
+                "doctrine/orm": "^2.8 | 3.0",
+                "phpstan/phpstan": "^1.10",
+                "symfony/debug-bundle": "^5.4|^6.0|^7.0",
+                "symfony/expression-language": "^5.4|^6.0|^7.0",
+                "symfony/form": "^5.4|^6.0|^7.0",
+                "symfony/framework-bundle": "^5.4|^6.0|^7.0",
+                "symfony/mercure-bundle": "^0.3.7",
+                "symfony/messenger": "^5.4|^6.0|^7.0",
+                "symfony/panther": "^1.0|^2.0",
+                "symfony/phpunit-bridge": "^5.4|^6.0|^7.0",
+                "symfony/process": "^5.4|6.3.*|^7.0",
+                "symfony/property-access": "^5.4|^6.0|^7.0",
+                "symfony/security-core": "^5.4|^6.0|^7.0",
+                "symfony/stopwatch": "^5.4|^6.0|^7.0",
+                "symfony/twig-bundle": "^5.4|^6.0|^7.0",
+                "symfony/web-profiler-bundle": "^5.4|^6.0|^7.0",
+                "symfony/webpack-encore-bundle": "^2.1.1"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "thanks": {
+                    "name": "symfony/ux",
+                    "url": "https://github.com/symfony/ux"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\UX\\Turbo\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kévin Dunglas",
+                    "email": "kevin@dunglas.fr"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Hotwire Turbo integration for Symfony",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "hotwire",
+                "javascript",
+                "mercure",
+                "symfony-ux",
+                "turbo",
+                "turbo-stream"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/ux-turbo/tree/v2.20.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-10T12:38:04+00:00"
+        },
+        {
             "name": "symfony/ux-twig-component",
             "version": "v2.19.2",
             "source": {
@@ -6222,16 +6319,16 @@
         },
         {
             "name": "symfony/webpack-encore-bundle",
-            "version": "v2.1.1",
+            "version": "v2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/webpack-encore-bundle.git",
-                "reference": "75cb918df3f65e28cf0d4bc03042bc45ccb19dd0"
+                "reference": "e335394b68a775a9b2bd173a8ba4fd2001f3870c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/webpack-encore-bundle/zipball/75cb918df3f65e28cf0d4bc03042bc45ccb19dd0",
-                "reference": "75cb918df3f65e28cf0d4bc03042bc45ccb19dd0",
+                "url": "https://api.github.com/repos/symfony/webpack-encore-bundle/zipball/e335394b68a775a9b2bd173a8ba4fd2001f3870c",
+                "reference": "e335394b68a775a9b2bd173a8ba4fd2001f3870c",
                 "shasum": ""
             },
             "require": {
@@ -6244,6 +6341,7 @@
             },
             "require-dev": {
                 "symfony/framework-bundle": "^5.4 || ^6.2 || ^7.0",
+                "symfony/http-client": "^5.4 || ^6.2 || ^7.0",
                 "symfony/phpunit-bridge": "^5.4 || ^6.2 || ^7.0",
                 "symfony/twig-bundle": "^5.4 || ^6.2 || ^7.0",
                 "symfony/web-link": "^5.4 || ^6.2 || ^7.0"
@@ -6270,10 +6368,10 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Integration with your Symfony app & Webpack Encore!",
+            "description": "Integration of your Symfony app with Webpack Encore",
             "support": {
                 "issues": "https://github.com/symfony/webpack-encore-bundle/issues",
-                "source": "https://github.com/symfony/webpack-encore-bundle/tree/v2.1.1"
+                "source": "https://github.com/symfony/webpack-encore-bundle/tree/v2.2.0"
             },
             "funding": [
                 {
@@ -6289,7 +6387,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-22T18:53:08+00:00"
+            "time": "2024-10-02T07:27:19+00:00"
         },
         {
             "name": "symfony/yaml",

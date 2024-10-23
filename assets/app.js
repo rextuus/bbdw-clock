@@ -8,4 +8,13 @@ import './bootstrap.js';
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.scss';
+import './styles/weather.scss';
 require('bootstrap');
+
+import { startStimulusApp } from '@symfony/stimulus-bridge';
+
+startStimulusApp(require.context(
+    '@symfony/stimulus-bridge/lazy-controller-loader!./controllers',
+    true,
+    /\.([jt])sx?$/
+));

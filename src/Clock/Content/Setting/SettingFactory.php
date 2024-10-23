@@ -7,10 +7,6 @@ namespace App\Clock\Content\Setting;
 use App\Clock\Content\Setting\Data\SettingData;
 use App\Entity\Setting;
 
-/**
- * @author Wolfgang Hinzmann <wolfgang.hinzmann@doccheck.com>
- * @license 2024 DocCheck Community GmbH
- */
 class SettingFactory
 {
     public function mapData(SettingData $data, Setting $setting): Setting
@@ -20,6 +16,8 @@ class SettingFactory
         $setting->setGamesPerDayLimit($data->getGamesPerDayLimit());
         $setting->setLedMatrixDisplayIp($data->getLedMatrixDisplayIp());
         $setting->setAlbumDisplayMode($data->getAlbumDisplayMode());
+        $setting->setLedMatrixMode($data->getLedMatrixDisplayMode());
+        $setting->setFontColor($data->getFontColor());
 
         return $setting;
     }

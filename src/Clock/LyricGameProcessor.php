@@ -84,7 +84,11 @@ class LyricGameProcessor
         $this->gameRoundService->createByData($gameRoundData);
 
         try {
-            $this->ledMatrixDisplayService->displayScrollingText($lyric->getContent());
+            match ($this->settingService->getLedMatrixMode()) {
+                LedMatrixDisplayMode::OFF => throw new \Exception('To be implemented'),
+                LedMatrixDisplayMode::PERMANENT => $this->ledMatrixDisplayService->displayStaticText($lyric->getContent()),
+                LedMatrixDisplayMode::RUNNING => $this->ledMatrixDisplayService->displayScrollingText($lyric->getContent()),
+            };
         } catch (Exception|TransportExceptionInterface $e) {
             dd($e);
         }

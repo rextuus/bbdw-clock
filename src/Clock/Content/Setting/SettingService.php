@@ -7,6 +7,7 @@ namespace App\Clock\Content\Setting;
 use App\Clock\Content\GameRound\GameRoundType;
 use App\Clock\Content\GameSession\GameSessionService;
 use App\Clock\Content\Setting\Data\SettingData;
+use App\Clock\LedMatrixDisplayMode;
 use App\Entity\Setting;
 
 class SettingService
@@ -31,6 +32,9 @@ class SettingService
             $session->setGamesPerDayLimit(3);
             $session->setForceNextGameInstantly(true);
             $session->setAlbumDisplayMode(AlbumDisplayMode::SPLIT);
+            $session->setLedMatrixMode(LedMatrixDisplayMode::PERMANENT);
+            $session->setCurrentLedText('Home Sweet Home! <3 <3 <3');
+            $session->setFontColor([]);
 
             $this->settingRepository->persist($session);
             $this->settingRepository->flush();
@@ -63,6 +67,12 @@ class SettingService
         return $setting;
     }
 
+    public function updateDefaultSettings(SettingData $settingData): void
+    {
+        $setting = $this->getSettings();
+        $this->updateSettings($setting, $settingData);
+    }
+
     public function getCurrentGameMode(): ?GameRoundType
     {
         return $this->getSettings()->getCurrentGameMode();
@@ -91,5 +101,23 @@ class SettingService
         $this->settingRepository->flush();
 
         $this->gameSessionService->setForceDisplayUpdate(true);
+    }
+
+    public function getCurrentLedText(): string
+    {
+        return $this->getSettings()->getCurrentLedText();
+    }
+
+    public function setCurrentLedText(string $ledText): void
+    {
+        $settings = $this->getSettings();
+        $settings->setCurrentLedText($ledText);
+
+        $this->settingRepository->persist($settings);
+    }
+
+    public function getLedMatrixMode(): LedMatrixDisplayMode
+    {
+        return $this->getSettings()->getLedMatrixMode();
     }
 }

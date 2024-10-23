@@ -26,12 +26,14 @@
         "symfony/http-client": "6.4.*",
         "symfony/messenger": "6.4.*",
         "symfony/runtime": "6.4.*",
+        "symfony/stimulus-bundle": "^2.21",
         "symfony/string": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
         "symfony/ux-live-component": "^2.19",
+        "symfony/ux-turbo": "^2.20",
         "symfony/ux-twig-component": "^2.19",
         "symfony/validator": "6.4.*",
-        "symfony/webpack-encore-bundle": "^2.1",
+        "symfony/webpack-encore-bundle": "^2.2",
         "symfony/yaml": "6.4.*"
     },
     "config": {

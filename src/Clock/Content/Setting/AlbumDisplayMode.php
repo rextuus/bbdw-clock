@@ -8,4 +8,14 @@ enum AlbumDisplayMode: string
     case SPLIT = 'split';
     case LOOSE = 'loose';
     case WIN = 'win';
+
+    public static function getChoices(): array
+    {
+        return [
+            'Carousel' => self::CAROUSEL,
+            'Split' => self::SPLIT,
+            'Loose' => self::LOOSE,
+            'Win' => self::WIN,
+        ];
+    }
 }

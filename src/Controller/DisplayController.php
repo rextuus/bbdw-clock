@@ -65,5 +65,13 @@ class DisplayController extends AbstractController
     #[Route('/update', name: 'app_display_update')]
     public function update(): Response
     {
-        return new JsonResponse(['success' => $this->gameSessionService->isForceDisplayUpdate()]);}
+        return new JsonResponse(['success' => $this->gameSessionService->isForceDisplayUpdate()]);
+    }
+
+    #[Route('/test', name: 'app_display_test')]
+    public function test(): Response
+    {
+        return $this->render('display/weather.html.twig', [
+        ]);
+    }
 }

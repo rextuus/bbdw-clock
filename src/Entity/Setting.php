@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Clock\Content\Setting\SettingRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use \App\Clock\Content\GameRound\GameRoundType;
 use \App\Clock\Content\Setting\AlbumDisplayMode;
+use \App\Clock\LedMatrixDisplayMode;
 
 #[ORM\Entity(repositoryClass: SettingRepository::class)]
 class Setting
@@ -32,6 +34,15 @@ class Setting
 
     #[ORM\Column(enumType: AlbumDisplayMode::class)]
     private AlbumDisplayMode $albumDisplayMode = AlbumDisplayMode::SPLIT;
+
+    #[ORM\Column(enumType: LedMatrixDisplayMode::class)]
+    private LedMatrixDisplayMode $ledMatrixMode = LedMatrixDisplayMode::RUNNING;
+
+    #[ORM\Column(length: 10000)]
+    private string $currentLedText = 'null';
+
+    #[ORM\Column(type: Types::JSON)]
+    private array $fontColor = [];
 
     public function getId(): ?int
     {
@@ -106,6 +117,46 @@ class Setting
     public function setAlbumDisplayMode(AlbumDisplayMode $albumDisplayMode): static
     {
         $this->albumDisplayMode = $albumDisplayMode;
+
+        return $this;
+    }
+
+    public function getLedMatrixMode(): LedMatrixDisplayMode
+    {
+        return $this->ledMatrixMode;
+    }
+
+    public function setLedMatrixMode(LedMatrixDisplayMode $ledMatrixMode): static
+    {
+        $this->ledMatrixMode = $ledMatrixMode;
+
+        return $this;
+    }
+
+    public function getCurrentLedText(): string
+    {
+        return $this->currentLedText;
+    }
+
+    public function setCurrentLedText(string $currentLedText): static
+    {
+        $this->currentLedText = $currentLedText;
+
+        return $this;
+    }
+
+    public function getFontColor(): array
+    {
+        return $this->fontColor ?? [];
+    }
+
+    public function setFontColor(?array $fontColor): static
+    {
+        if ($fontColor === null) {
+            $fontColor = [];
+        }
+
+        $this->fontColor = $fontColor;
 
         return $this;
     }

@@ -18,6 +18,7 @@ class LedMatrixDisplayService
     ) {
     }
 
+    // TODO use async events to push => if screen is in scrolling mode we need a huge timeout
     public function displayStaticText(string $text): void
     {
         // prepare text for display => remove Umlaute and -
@@ -25,7 +26,16 @@ class LedMatrixDisplayService
 
         $ip = $this->settingService->getLedMatrixDisplayIp();
 
-        $this->client->request('GET', $ip . self::TEXT_API_URL . '?text=' . $text . '&variant=static');
+//        try {
+//            $response = $this->client->request('GET', 'http://' . $ip . self::TEXT_API_URL . '?text=' . $text . '&variant=static', [
+//                'timeout' => 120, // Timeout in seconds (2 minutes)
+//            ]);
+//        } catch (TransportExceptionInterface $e) {
+//            // Handle the exception
+//            echo "Request failed: " . $e->getMessage();
+//        }
+
+        $this->settingService->setCurrentLedText($text);
     }
 
     public function displayScrollingText(string $text): void
@@ -35,24 +45,21 @@ class LedMatrixDisplayService
 
         $ip = $this->settingService->getLedMatrixDisplayIp();
 
-        $this->client->request('GET', 'http://' . $ip . self::TEXT_API_URL . '?text=' . $text);
+//        try {
+//            $response = $this->client->request('GET', 'http://' . $ip . self::TEXT_API_URL . '?text=' . $text, [
+//                'timeout' => 120, // Timeout in seconds (2 minutes)
+//            ]);
+//        } catch (TransportExceptionInterface $e) {
+//            // Handle the exception
+//            echo "Request failed: " . $e->getMessage();
+//        }
+
+        $this->settingService->setCurrentLedText($text);
     }
 
     private function prepareTextForDisplaying(string $text): string
     {
         setlocale(LC_ALL, 'de_DE');
         return iconv('UTF-8', 'ASCII//TRANSLIT', $text);
-
-//        $replacementMap = [
-//            'ä' => 'ae',
-//            'ö' => 'oe',
-//            'ü' => 'ue',
-//            'Ä' => 'Ae',
-//            'Ö' => 'ae',
-//            'Ü' => 'ae',
-//            '-' => 'ae',
-//        ];
-//
-//        return str_replace(['ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü', '-'], ['ae', 'oe', 'ue', 'Ae', 'Oe', 'Ue', ' '], $text);
     }
 }
