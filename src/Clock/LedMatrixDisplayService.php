@@ -26,14 +26,14 @@ class LedMatrixDisplayService
 
         $ip = $this->settingService->getLedMatrixDisplayIp();
 
-//        try {
-//            $response = $this->client->request('GET', 'http://' . $ip . self::TEXT_API_URL . '?text=' . $text . '&variant=static', [
-//                'timeout' => 120, // Timeout in seconds (2 minutes)
-//            ]);
-//        } catch (TransportExceptionInterface $e) {
-//            // Handle the exception
-//            echo "Request failed: " . $e->getMessage();
-//        }
+        try {
+            $response = $this->client->request('GET', 'http://' . $ip . self::TEXT_API_URL . '?text=' . $text . '&variant=static', [
+                'timeout' => 120, // Timeout in seconds (2 minutes)
+            ]);
+        } catch (TransportExceptionInterface $e) {
+            // Handle the exception
+            echo "Request failed: " . $e->getMessage();
+        }
 
         $this->settingService->setCurrentLedText($text);
     }
@@ -45,14 +45,14 @@ class LedMatrixDisplayService
 
         $ip = $this->settingService->getLedMatrixDisplayIp();
 
-//        try {
-//            $response = $this->client->request('GET', 'http://' . $ip . self::TEXT_API_URL . '?text=' . $text, [
-//                'timeout' => 120, // Timeout in seconds (2 minutes)
-//            ]);
-//        } catch (TransportExceptionInterface $e) {
-//            // Handle the exception
-//            echo "Request failed: " . $e->getMessage();
-//        }
+        try {
+            $response = $this->client->request('GET', 'http://' . $ip . self::TEXT_API_URL . '?text=' . $text, [
+                'timeout' => 120, // Timeout in seconds (2 minutes)
+            ]);
+        } catch (TransportExceptionInterface $e) {
+            // Handle the exception
+            echo "Request failed: " . $e->getMessage();
+        }
 
         $this->settingService->setCurrentLedText($text);
     }
