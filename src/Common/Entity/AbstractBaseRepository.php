@@ -16,6 +16,7 @@ use Doctrine\ORM\TransactionRequiredException;
  */
 abstract class AbstractBaseRepository extends ServiceEntityRepository
 {
+
     /**
      * @throws ORMException
      */

@@ -39,6 +39,7 @@ class DisplayController extends AbstractController
             AlbumDisplayMode::CAROUSEL => $template = 'display/album_choice_carousel.html.twig',
             AlbumDisplayMode::LOOSE => $template = 'display/loose.html.twig',
             AlbumDisplayMode::WIN => $template = 'display/win.html.twig',
+            AlbumDisplayMode::CLOCK => $template = 'display/weather.html.twig',
         };
 
         $trapAlbums = [];
@@ -61,6 +62,7 @@ class DisplayController extends AbstractController
             'trapAlbums' => $trapAlbums,
             'looseImage' => $looseImage,
             'winImage' => $winImage,
+            'openweather_api_key' => $this->apiKey
         ]);
     }
 

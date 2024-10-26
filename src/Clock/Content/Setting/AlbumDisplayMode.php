@@ -8,6 +8,7 @@ enum AlbumDisplayMode: string
     case SPLIT = 'split';
     case LOOSE = 'loose';
     case WIN = 'win';
+    case CLOCK = 'clock';
 
     public static function getChoices(): array
     {
@@ -16,6 +17,7 @@ enum AlbumDisplayMode: string
             'Split' => self::SPLIT,
             'Loose' => self::LOOSE,
             'Win' => self::WIN,
+            'Clock' => self::CLOCK,
         ];
     }
 }

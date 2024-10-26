@@ -144,7 +144,19 @@ class LyricGameProcessor
         }
         // TODO what will happen next?
 
-        // update the gameRound entity
+        $this->updateTheGameRoundEntity($correct);
+
+        // place event which is handled after the audio is finished
+        $playtime = $audio->getPlayTime();
+        $delay = ((int)($playtime) + 3) * 1000;
+        $envelope = (new Envelope(new NextGameRoundMessage()))->with(new DelayStamp($delay));
+        $this->messageBus->dispatch($envelope);
+
+        return $audio;
+    }
+
+    private function updateTheGameRoundEntity(bool $correct): void
+    {
         $gameRound = $this->gameRoundService->findCurrentRound();
         $gameRoundData = (new GameRoundUpdateData())->intiFromEntity($gameRound);
 
@@ -157,14 +169,6 @@ class LyricGameProcessor
         $gameRoundData->setWon($correct);
 
         $this->gameRoundService->update($gameRound, $gameRoundData);
-
-        // place event which is handled after the audio is finished
-        $playtime = $audio->getPlayTime();
-        $delay = ((int)($playtime) + 3) * 1000;
-        $envelope = (new Envelope(new NextGameRoundMessage()))->with(new DelayStamp($delay));
-        $this->messageBus->dispatch($envelope);
-
-        return $audio;
     }
 
     /**
