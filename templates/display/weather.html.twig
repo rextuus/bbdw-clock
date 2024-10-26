@@ -38,5 +38,18 @@
     <script>
         // Pass the API key to JavaScript
         const openWeatherApiKey = '{{ openweather_api_key }}'; // Use the parameter directly
+        function refreshImage() {
+            fetch('/display/update')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+
+        // Set an interval to refresh the image every 5 seconds.
+        setInterval(refreshImage, 1000);
     </script>
 {% endblock %}

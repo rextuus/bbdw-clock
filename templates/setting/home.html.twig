@@ -1,0 +1,39 @@
+{# templates/display_mode/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Display Mode{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="text-center mb-4">Select Display Mode</h1>
+
+        {{ form_start(form) }}
+        <div class="row text-center">
+            <div class="col-6 mb-3">
+                <button type="submit" name="form[carousel]" class="btn btn-primary w-100 py-4" title="Carousel">
+                    <i class="fas fa-sync-alt fa-3x"></i>
+                </button>
+            </div>
+            <div class="col-6 mb-3">
+                <button type="submit" name="form[split]" class="btn btn-primary w-100 py-4" title="Permanent">
+                    <i class="fas fa-play-circle fa-3x"></i>
+                </button>
+            </div>
+            <div class="col-6 mb-3">
+                <button type="submit" name="form[new]" class="btn btn-primary w-100 py-4" title="New">
+                    <i class="fas fa-plus-circle fa-3x"></i>
+                </button>
+            </div>
+            <div class="col-6 mb-3">
+                <button type="submit" name="form[clock]" class="btn btn-primary w-100 py-4" title="Custom">
+                    <i class="fas fa-clock fa-3x"></i>
+                </button>
+            </div>
+        </div>
+        {{ form_end(form, { 'render_rest': false }) }}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mt-4 text-center">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endblock %}
