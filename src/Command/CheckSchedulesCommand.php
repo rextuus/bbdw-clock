@@ -4,7 +4,6 @@ namespace App\Command;
 
 use App\Clock\Content\ShutdownSchedule\ShutdownScheduleService;
 use App\Clock\PowerManagementService;
-use DateInterval;
 use DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -13,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'app:check-schedules',
-    description: 'Add a short description for your command',
+    description: 'Checks and applies shutdown and restart schedules',
 )]
 class CheckSchedulesCommand extends Command
 {
@@ -27,24 +26,34 @@ class CheckSchedulesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $output->writeln('Starting schedule check...');
         $scheduleList = $this->shutdownScheduleService->getScheduleList();
         $now = new DateTime();
-        $oneMinuteBefore = (clone $now)->sub(new DateInterval('PT1M'));
-        $oneMinuteAfter = (clone $now)->add(new DateInterval('PT1M'));
+
+        $currentHourMinute = $now->format('H:i');
+        $output->writeln('Current time: ' . $currentHourMinute);
 
         foreach ($scheduleList->getSchedules() as $schedule) {
             $restartTime = $schedule->getRestartTime();
             $shutdownTime = $schedule->getShutdownTime();
 
-            if ($restartTime > $oneMinuteBefore && $restartTime < $oneMinuteAfter) {
+            $restartHourMinute = $restartTime->format('H:i');
+            $shutdownHourMinute = $shutdownTime->format('H:i');
+
+            $output->writeln("Checking schedule: restart at $restartHourMinute, shutdown at $shutdownHourMinute");
+
+            if ($restartHourMinute === $currentHourMinute) {
+                $output->writeln('Turning display on.');
                 $this->powerManagementService->turnDisplayOn();
             }
 
-            if ($shutdownTime > $oneMinuteBefore && $shutdownTime < $oneMinuteAfter) {
+            if ($shutdownHourMinute === $currentHourMinute) {
+                $output->writeln('Turning display off.');
                 $this->powerManagementService->turnDisplayOff();
             }
         }
 
+        $output->writeln('Schedule check completed.');
         return Command::SUCCESS;
     }
 }
