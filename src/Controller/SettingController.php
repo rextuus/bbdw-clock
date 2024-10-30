@@ -7,6 +7,7 @@ use App\Clock\Content\Setting\AlbumDisplayMode;
 use App\Clock\Content\Setting\Data\SettingData;
 use App\Clock\Content\Setting\SettingService;
 use App\Clock\Content\ShutdownSchedule\ShutdownScheduleRepository;
+use App\Clock\Content\ShutdownSchedule\ShutdownScheduleService;
 use App\Clock\LedMatrixDisplayMode;
 use App\Clock\LedMatrixDisplayService;
 use App\Clock\LyricGameProcessor;
@@ -224,8 +225,11 @@ class SettingController extends AbstractController
     public function schedules(
         Request $request,
         ShutdownScheduleRepository $repository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ShutdownScheduleService $shutdownScheduleService,
     ): Response {
+        $shutdownScheduleService->getScheduleList();
+
         $shutdownSchedule = new ShutdownSchedule();
         $form = $this->createForm(ShutdownScheduleType::class, $shutdownSchedule);
         $form->handleRequest($request);
