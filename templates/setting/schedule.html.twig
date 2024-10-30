@@ -1,7 +1,102 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div id="schedule-list-content">
-        {{ component('ScheduleListCollectionType', {'initialFormData': scheduleList}) }}
+    <div class="container mt-3">
+        <h1 class="h4">Shutdown Schedules</h1>
+
+        <!-- Time Frame Visualization -->
+        <div class="time-frame mb-5">
+            <h2 class="h5">Time Frame</h2>
+            <div class="time-line position-relative mb-3" style="height: 30px; border-bottom: 1px solid #ddd;">
+                {% for i in 0..23 %}
+                    {% if i % 3 == 0 %}
+                        <div class="time-label position-absolute" style="left: {{ (i / 24) * 100 }}%;">
+                            {{ (i < 10 ? '0' ~ i : i) ~ ':00' }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% for schedule in shutdownSchedules %}
+                    {% set startOffset = (schedule.shutdownTime|date('H') * 60 + schedule.shutdownTime|date('i')) / 1440 * 100 %}
+                    {% set endOffset = (schedule.restartTime|date('H') * 60 + schedule.restartTime|date('i')) / 1440 * 100 %}
+                    <div class="time-block position-absolute bg-warning" style="left: {{ startOffset }}%; width: {{ endOffset - startOffset }}%; height: 30px; opacity: 0.5;" title="Shutdown: {{ schedule.shutdownTime|date('H:i') }} - Restart: {{ schedule.restartTime|date('H:i') }}"></div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <ul class="list-group mb-3">
+            {% for shutdownSchedule in shutdownSchedules %}
+                <li class="list-group-item schedule-item">
+                    <div>
+                        <div><strong>Shutdown:</strong> {{ shutdownSchedule.shutdownTime|date('H:i') }}</div>
+                        <div><strong>Restart:</strong> {{ shutdownSchedule.restartTime|date('H:i') }}</div>
+                        <div><strong>List:</strong> {{ shutdownSchedule.scheduleList.identifier }}</div>
+                    </div>
+                    <form action="{{ path('shutdown_schedule_delete', {'id': shutdownSchedule.id}) }}" method="post" class="delete-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ shutdownSchedule.id) }}">
+                        <button type="submit" class="btn btn-danger btn-sm delete-btn">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2 class="h5">Add new Shutdown Schedule</h2>
+
+        {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_label(form.shutdownTime, 'Shutdown Time', {'label_attr': {'class': 'form-label mt-3'}}) }}
+            {{ form_widget(form.shutdownTime, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.restartTime, 'Restart Time', {'label_attr': {'class': 'form-label mt-3'}}) }}
+            {{ form_widget(form.restartTime, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.scheduleList, 'Schedule List', {'label_attr': {'class': 'form-label mt-3'}}) }}
+            {{ form_widget(form.scheduleList, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group mt-3">
+            {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary btn-block'}}) }}
+        </div>
+        {{ form_end(form) }}
     </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .delete-btn {
+            padding: 0.2rem 0.4rem;
+            font-size: 0.7rem;
+        }
+        .delete-form {
+            display: inline;
+        }
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .time-frame {
+            position: relative;
+            margin: 1rem 0;
+        }
+        .time-line {
+            position: relative;
+            height: 30px;
+            border-bottom: 1px solid #ddd;
+        }
+        .time-label {
+            position: absolute;
+            bottom: -1.5rem;
+            font-size: 0.8rem;
+            transform: translateX(-50%);
+        }
+        .time-block {
+            position: absolute;
+            height: 30px;
+            background-color: rgba(255, 193, 7, 0.5); /* Bootstrap warning color with opacity */
+        }
+    </style>
 {% endblock %}

@@ -2,26 +2,22 @@
 
 namespace App\Controller;
 
-use App\Clock\Content\GameRound\GameRoundType;
 use App\Clock\Content\GameSession\GameSessionService;
 use App\Clock\Content\Setting\AlbumDisplayMode;
 use App\Clock\Content\Setting\Data\SettingData;
 use App\Clock\Content\Setting\SettingService;
-use App\Clock\Content\ShutdownSchedule\Data\ShutdownScheduleData;
-use App\Clock\Content\ShutdownSchedule\ScheduleListRepository;
-use App\Clock\Content\ShutdownSchedule\ShutdownScheduleService;
+use App\Clock\Content\ShutdownSchedule\ShutdownScheduleRepository;
 use App\Clock\LedMatrixDisplayMode;
 use App\Clock\LedMatrixDisplayService;
 use App\Clock\LyricGameProcessor;
-use App\Entity\ScheduleList;
+use App\Clock\PowerManagementService;
 use App\Entity\ShutdownSchedule;
-use App\Form\ScheduleListType;
+use App\Form\FreeMatrixTextType;
 use App\Form\SettingsType;
 use App\Form\ShutdownScheduleType;
 use App\Form\ToggleDisplayType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,19 +27,19 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/setting')]
 class SettingController extends AbstractController
 {
-    public function __construct(#[Autowire('%env(POWER_SWITCH_SCRIP_PATH)%')] private readonly string $scriptPath)
-    {
+    public function __construct(
+        private readonly PowerManagementService $powerManagementService,
+        private readonly SettingService $settingService,
+        private readonly LedMatrixDisplayService $ledMatrixDisplayService
+    ) {
     }
 
     #[Route('/edit', name: 'app_setting_edit')]
     public function index(
         Request $request,
-        SettingService $settingService,
         GameSessionService $gameSessionService,
-        LedMatrixDisplayService $ledMatrixDisplayService
-    ): Response
-    {
-        $setting = $settingService->getSettings();
+    ): Response {
+        $setting = $this->settingService->getSettings();
 
         $data = (new SettingData())->initFromEntity($setting);
         $form = $this->createForm(SettingsType::class, $data);
@@ -53,24 +49,27 @@ class SettingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var SettingData $data */
             $data = $form->getData();
-            $settings = $settingService->getSettings();
+            $settings = $this->settingService->getSettings();
 
             $needLedMatrixUpdate = $data->getLedMatrixDisplayMode() != $settings->getLedMatrixMode() ||
                 $data->getFontColor() != $settings->getFontColor();
 
-            $settingService->updateDefaultSettings($data);
+            $this->settingService->updateDefaultSettings($data);
             $gameSessionService->setForceDisplayUpdate(true);
 
             if ($needLedMatrixUpdate) {
-                $currentDisplayText = $settingService->getCurrentLedText();
+                $currentDisplayText = $this->settingService->getCurrentLedText();
 
                 match ($data->getLedMatrixDisplayMode()) {
                     LedMatrixDisplayMode::OFF => throw new \Exception('To be implemented'),
-                    LedMatrixDisplayMode::PERMANENT => $ledMatrixDisplayService->displayStaticText($currentDisplayText),
-                    LedMatrixDisplayMode::RUNNING => $ledMatrixDisplayService->displayScrollingText($currentDisplayText),
+                    LedMatrixDisplayMode::PERMANENT => $this->ledMatrixDisplayService->displayStaticText(
+                        $currentDisplayText
+                    ),
+                    LedMatrixDisplayMode::RUNNING => $this->ledMatrixDisplayService->displayScrollingText(
+                        $currentDisplayText
+                    ),
                 };
             }
-
         }
 
         return $this->render('setting/index.html.twig', [
@@ -86,9 +85,9 @@ class SettingController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('toggleOn')->isClicked()) {
-                exec('sh ' . $this->scriptPath . ' off');
+                $this->powerManagementService->turnDisplayOn();
             } elseif ($form->get('toggleOff')->isClicked()) {
-                exec('sh ' . $this->scriptPath . ' on');
+                $this->powerManagementService->turnDisplayOff();
             }
 
             // Optionally add a flash message or redirect
@@ -103,16 +102,39 @@ class SettingController extends AbstractController
     }
 
     #[Route('/', name: 'app_setting_ui')]
-    public function setting(Request $request, SettingService $settingService, LyricGameProcessor $lyricGameProcessor): Response
-    {
+    public function setting(
+        Request $request,
+        SettingService $settingService,
+        LyricGameProcessor $lyricGameProcessor
+    ): Response {
+        $settings = $this->settingService->getSettings();
+
+        $isCarouselMode = $settings->getAlbumDisplayMode() == AlbumDisplayMode::CAROUSEL;
+        $carouselAttributes = [
+            'class' => $isCarouselMode ? 'btn btn-secondary' : 'btn btn-primary',
+            'disabled' => $isCarouselMode
+        ];
+
+        $isSplitMode = $settings->getAlbumDisplayMode() == AlbumDisplayMode::SPLIT;
+        $splitAttributes = [
+            'class' => $isSplitMode ? 'btn btn-secondary' : 'btn btn-primary',
+            'disabled' => $isSplitMode
+        ];
+
+        $isClockMode = $settings->getAlbumDisplayMode() == AlbumDisplayMode::CLOCK;
+        $clockAttributes = [
+            'class' => $isClockMode ? 'btn btn-secondary' : 'btn btn-primary',
+            'disabled' => $isClockMode
+        ];
+
         $form = $this->createFormBuilder()
             ->add('carousel', SubmitType::class, [
                 'label' => 'Carousel',
-                'attr' => ['class' => 'btn btn-primary'],
+                'attr' => $carouselAttributes,
             ])
             ->add('split', SubmitType::class, [
                 'label' => 'Split',
-                'attr' => ['class' => 'btn btn-primary'],
+                'attr' => $splitAttributes,
             ])
             ->add('new', SubmitType::class, [
                 'label' => 'New',
@@ -120,7 +142,15 @@ class SettingController extends AbstractController
             ])
             ->add('clock', SubmitType::class, [
                 'label' => 'Clock',
-                'attr' => ['class' => 'btn btn-success'],
+                'attr' => $clockAttributes,
+            ])
+            ->add('text', SubmitType::class, [
+                'label' => 'Clock',
+                'attr' => [],
+            ])
+            ->add('power', SubmitType::class, [
+                'label' => 'Clock',
+                'attr' => [],
             ])
             ->getForm();
 
@@ -140,6 +170,12 @@ class SettingController extends AbstractController
                     break;
                 case 'new':
                     $lyricGameProcessor->setNewRandomLyric();
+                    break;
+                case 'text':
+                    return $this->redirectToRoute('app_setting_text');
+                    break;
+                case 'power':
+                    return $this->redirectToRoute('app_setting_power');
                     break;
             }
 
@@ -181,13 +217,68 @@ class SettingController extends AbstractController
         return new JsonResponse(['status' => 'success', 'message' => "Mode set to $mode"]);
     }
 
-    #[Route('/schedule', name: 'app_schedule')]
-    public function schedule(Request $request, ShutdownScheduleService $scheduleService): Response
-    {
-        $scheduleList = $scheduleService->getScheduleList();
+    #[\Symfony\Component\Routing\Annotation\Route('/schedules', name: 'shutdown_schedule_index', methods: [
+        'GET',
+        'POST'
+    ])]
+    public function schedules(
+        Request $request,
+        ShutdownScheduleRepository $repository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $shutdownSchedule = new ShutdownSchedule();
+        $form = $this->createForm(ShutdownScheduleType::class, $shutdownSchedule);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($shutdownSchedule);
+            $entityManager->flush();
+            return $this->redirectToRoute('shutdown_schedule_index');
+        }
+
+        $shutdownSchedules = $repository->findAll();
 
         return $this->render('setting/schedule.html.twig', [
-            'scheduleList' => $scheduleList,
+            'shutdownSchedules' => $shutdownSchedules,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/shutdown_schedule/delete/{id}', name: 'shutdown_schedule_delete', methods: ['POST'])]
+    public function delete(ShutdownSchedule $shutdownSchedule, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($shutdownSchedule);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('shutdown_schedule_index');
+    }
+
+    #[Route('/text', name: 'app_setting_text')]
+    public function addText(Request $request): Response
+    {
+        $form = $this->createForm(FreeMatrixTextType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $currentDisplayText = $data['text'];
+            match ($data['mode']) {
+                LedMatrixDisplayMode::OFF => throw new \Exception('To be implemented'),
+                LedMatrixDisplayMode::PERMANENT => $this->ledMatrixDisplayService->displayStaticText(
+                    $currentDisplayText
+                ),
+                LedMatrixDisplayMode::RUNNING => $this->ledMatrixDisplayService->displayScrollingText(
+                    $currentDisplayText
+                ),
+            };
+
+
+            return $this->redirectToRoute('app_setting_ui'); // Redirect to clear the form
+        }
+
+        return $this->render('setting/matrix_text.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 

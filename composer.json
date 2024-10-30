@@ -26,6 +26,7 @@
         "symfony/http-client": "6.4.*",
         "symfony/messenger": "6.4.*",
         "symfony/runtime": "6.4.*",
+        "symfony/security-csrf": "6.4.*",
         "symfony/stimulus-bundle": "^2.21",
         "symfony/string": "6.4.*",
         "symfony/twig-bundle": "6.4.*",

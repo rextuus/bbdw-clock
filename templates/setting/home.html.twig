@@ -25,11 +25,22 @@
                 </button>
             </div>
             <div class="col-6 mb-3">
-                <button type="submit" name="form[clock]" class="btn btn-primary w-100 py-4" title="Custom">
+                <button type="submit" name="form[clock]" class="btn btn-primary w-100 py-4" title="Clock">
                     <i class="fas fa-clock fa-3x"></i>
                 </button>
             </div>
+            <div class="col-6 mb-3">
+                <button type="submit" name="form[text]" class="btn btn-primary w-100 py-4" title="Text">
+                    <i class="fas fa-file-text fa-3x"></i>
+                </button>
+            </div>
+            <div class="col-6 mb-3">
+                <button type="submit" name="form[power]" class="btn btn-primary w-100 py-4" title="Power">
+                    <i class="fas fa-power-off fa-3x"></i>
+                </button>
+            </div>
         </div>
+        {{ form_widget(form._token) }}
         {{ form_end(form, { 'render_rest': false }) }}
 
         {% for message in app.flashes('success') %}
