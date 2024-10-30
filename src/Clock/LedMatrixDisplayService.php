@@ -27,7 +27,7 @@ class LedMatrixDisplayService
         $ip = $this->settingService->getLedMatrixDisplayIp();
 
         $colors = $this->settingService->getSettings()->getFontColor();
-        $color = '&colorR=' . $colors['r'] . 'colorG=' . $colors['g'] . '&colorB=' . $colors['b'];
+        $color = '&colorR=' . $colors['r'] . '&colorG=' . $colors['g'] . '&colorB=' . $colors['b'];
         try {
             $response = $this->client->request(
                 'GET',
@@ -52,7 +52,7 @@ class LedMatrixDisplayService
         $ip = $this->settingService->getLedMatrixDisplayIp();
 
         $colors = $this->settingService->getSettings()->getFontColor();
-        $color = '&colorR=' . $colors['r'] . 'colorG=' . $colors['g'] . '&colorB=' . $colors['b'];
+        $color = '&colorR=' . $colors['r'] . '&colorG=' . $colors['g'] . '&colorB=' . $colors['b'];
         try {
             $response = $this->client->request(
                 'GET',
