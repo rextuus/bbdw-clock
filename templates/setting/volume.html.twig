@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container volume-container">
+        <h2 class="volume-label">Adjust Volume</h2>
+
+        {{ form_start(form) }}
+        <div class="volume-slider">
+            {{ form_row(form.volume, {'attr': {'class': 'form-range'}}) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-set-volume mt-3">Set Volume</button>
+        {{ form_end(form) }}
+    </div>
+
+    <style>
+        /* Custom styles for small screen */
+        .volume-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 10px;
+        }
+        .volume-slider {
+            width: 80%;
+        }
+        .btn-set-volume {
+            width: 100%;
+            font-size: 1.2rem;
+        }
+        .volume-label {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const volumeInput = document.querySelector('input[type="range"]');
+            const volumeLabel = document.querySelector('.volume-label');
+
+            // Display the current volume level as the user adjusts the slider
+            volumeInput.addEventListener('input', () => {
+                volumeLabel.textContent = `Volume: ${volumeInput.value}%`;
+            });
+        });
+    </script>
+{% endblock %}

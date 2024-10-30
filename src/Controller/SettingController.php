@@ -17,6 +17,7 @@ use App\Form\FreeMatrixTextType;
 use App\Form\SettingsType;
 use App\Form\ShutdownScheduleType;
 use App\Form\ToggleDisplayType;
+use App\Form\VolumeControlType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -153,6 +154,18 @@ class SettingController extends AbstractController
                 'label' => 'Clock',
                 'attr' => [],
             ])
+            ->add('schedules', SubmitType::class, [
+                'label' => 'Clock',
+                'attr' => [],
+            ])
+            ->add('volume', SubmitType::class, [
+                'label' => 'Clock',
+                'attr' => [],
+            ])
+            ->add('settings', SubmitType::class, [
+                'label' => 'Clock',
+                'attr' => [],
+            ])
             ->getForm();
 
         $form->handleRequest($request);
@@ -178,6 +191,15 @@ class SettingController extends AbstractController
                 case 'power':
                     return $this->redirectToRoute('app_setting_power');
                     break;
+                case 'schedules':
+                    return $this->redirectToRoute('shutdown_schedule');
+                    break;
+                case 'volume':
+                    return $this->redirectToRoute('app_volume');
+                    break;
+                case 'settings':
+                    return $this->redirectToRoute('app_setting_edit');
+                    break;
             }
 
             // Optionally, add a flash message or redirect
@@ -190,35 +212,7 @@ class SettingController extends AbstractController
         ]);
     }
 
-    #[Route('/handle', name: 'app_setting_ajax')]
-    public function handle(Request $request): Response
-    {
-        $mode = $request->request->get('mode');
-
-        switch ($mode) {
-            case 'carousel':
-                // Trigger action for Mode1: Carousel
-                exec('sh /path/to/your/mode_script.sh carousel');
-                break;
-
-            case 'permanent':
-                // Trigger action for Mode2: Permanent
-                exec('sh /path/to/your/mode_script.sh permanent');
-                break;
-
-            case 'new':
-                // Trigger action for Mode3: New
-                exec('sh /path/to/your/mode_script.sh new');
-                break;
-
-            default:
-                return new JsonResponse(['status' => 'error', 'message' => 'Invalid mode'], 400);
-        }
-
-        return new JsonResponse(['status' => 'success', 'message' => "Mode set to $mode"]);
-    }
-
-    #[\Symfony\Component\Routing\Annotation\Route('/schedules', name: 'shutdown_schedule_index', methods: [
+    #[\Symfony\Component\Routing\Annotation\Route('/schedules', name: 'shutdown_schedule', methods: [
         'GET',
         'POST'
     ])]
@@ -237,7 +231,7 @@ class SettingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($shutdownSchedule);
             $entityManager->flush();
-            return $this->redirectToRoute('shutdown_schedule_index');
+            return $this->redirectToRoute('shutdown_schedule');
         }
 
         $shutdownSchedules = $repository->findAll();
@@ -286,4 +280,23 @@ class SettingController extends AbstractController
         ]);
     }
 
+    #[Route('/volume', name: 'app_volume')]
+    public function controlVolume(Request $request): Response
+    {
+        // Fetch the current volume level
+        $currentVolume = (int) shell_exec("amixer get 'Master' | grep -o -m 1 '[0-9]\\+%' | tr -d '%'");
+        $form = $this->createForm(VolumeControlType::class, ['volume' => $currentVolume]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $volume = $form->getData()['volume'];
+            shell_exec("amixer set 'Master' {$volume}%");
+            $this->addFlash('success', "Volume set to {$volume}%");
+        }
+
+        return $this->render('setting/volume.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 }
